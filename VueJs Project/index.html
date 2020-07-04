@@ -1,0 +1,97 @@
+<!--reference taken from practice exercises given by Christine Bittle--> 
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>VueJs Project</title>
+		<meta charset="UTF-8">
+		<!--importing the vuejs elements-->
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<!--importing the bootstrap-->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
+		<!--styling for the circle-->
+		<style>
+			.circle{border-radius:50%; background:Grey; border:1px solid #ccc; display:inline-block;}
+		</style>
+	</head>
+
+	<body>
+		<!--header of the webpage-->
+		<div style="background-color: blue;">
+			<h2 style="text-align: center; padding: 2%;">Guess the correct circle ...</h2>
+		</div>
+		<!--Instructions for the participant-->
+		<div style="text-align: center;">
+			<h2>INTRUCTIONS</h2>
+			<p>
+				Guess and Click the circle which You think has the value equal to the system generated number<br>
+				You will be given 5chances to make a right guess<br>
+				If you cannot make the right guess in 5 chances you will be asked to start again
+			</p>
+		</div>
+		<!--creating the app section where the html code is created using VueJs-->
+		<div id="app">
+			<!--binding the values of the data created in the Vue app section-->
+			<orb 
+				v-for="orb in orbs"
+				v-bind:radius="orb.radius"
+				v-bind:color="orb.color"
+				v-bind:x="orb.x"
+				v-bind:value="orb.value"
+				v-bind:key="orb.id">
+			</orb>	
+		</div>
+	
+		<script>
+			var count = 0;//creating a counter variable to check the number of click
+			//if it exceeds 5 the user will be asked to refresh the page and start again
+
+			var num = Math.floor(Math.random()*11);
+			console.log("System generated number "+num);
+
+		Vue.component('orb',{//creating a vue component to access its properties
+			props:['radius','color', 'x', 'value', 'message'],	//accessing the values as props
+			template://creating the template of how the webpage should look like
+			`<span 
+				v-bind:class="'circle'" 
+				v-bind:style="{'width':radius+'px', 'height':radius+'px', 'background':color,
+				'margin':x+'%'}"
+				v-on:click="result(value);">
+			</span>`,
+			methods:{//creating functions in VueJS
+				result:function(number){
+					console.log(number);//printing the value of the associated circle
+					count++;//incrementing the counter till the user finishes all the chances 
+
+					//to check whether the circle value matches the random generated value
+					if(number == num){ 
+						var guess = confirm('You guessed the right circle...Do you want to play again');
+						if(guess)
+							window.location="index.html"; 
+					}else if(count == 5){
+						var end = confirm('You lost the game..Do you want to restart');
+						console.log(end);
+						if(end)
+							window.location="index.html";    
+					}
+				}	
+			}
+		
+		});
+		
+		var app = new Vue({
+			el: '#app',
+			
+			data:{
+				orbs:[//creating the properties for the orbs element
+					{id:1, radius:120, color:'black', x:6, value:Math.floor(Math.random()*11)},
+					{id:2, radius:120, color:'blue', x:6, value:Math.floor(Math.random()*11)},
+					{id:3, radius:120, color:'orange', x:6, value:Math.floor(Math.random()*11)},
+					{id:4, radius:120, color:'yellow', x:6, value:Math.floor(Math.random()*11)},
+					{id:5, radius:120, color:'red', x:6, value:Math.floor(Math.random()*11)}
+				]
+			},	
+		});
+		</script>
+	</body>
+</html>
